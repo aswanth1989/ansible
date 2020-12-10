@@ -1,0 +1,14 @@
+[linux:children]
+ubuntu
+redhat
+
+[ubuntu]
+18.139.255.194
+13.229.203.173
+
+[redhat]
+13.229.116.119
+13.212.206.250
+
+[control]
+localhost ansible_connection=local
