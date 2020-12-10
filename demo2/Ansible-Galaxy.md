@@ -11,3 +11,5 @@ Roles allow you to structure and group your playbook tasks and associated compon
 Larger projects are made easier to manage, roles are grouped with logical structure making them easier to share, roles can be written to target specific requirements
 
 `ansible-galaxy init nginx`
+`ansible-galaxy install elastic.elasticsearch,7.10.0 --force`
+
