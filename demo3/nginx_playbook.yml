@@ -1,0 +1,45 @@
+---
+-
+  hosts: docker-server
+  tasks:
+    - name: Pull rastasheep's ubuntu-sshd image
+      docker_image:
+        name: rastasheep/ubuntu-sshd
+
+    - name: Create a container from the rastasheep/ubuntu-sshd image, port forward 22 to 2222
+      docker_container:
+        name: sshdserver
+        image: rastasheep/ubuntu-sshd
+        ports:
+          - "2222:22"
+        command: /usr/sbin/sshd -D
+
+    - add_host:
+        hostname: "docker-container"
+        ansible_host: "{{ ansible_host }}"
+        ansible_port: 2222
+        ansible_user: root
+        ansible_password: root
+
+-
+  hosts: docker-container
+  roles:
+    - nginx
+
+-
+  hosts: docker-server
+  tasks:
+    - name: Create docker image from SSHD container
+      command: "docker commit -c 'CMD [\"nginx\", \"-g\", \"daemon off;\"]' sshdserver ansible/nginx:latest"
+
+    - name: Create an nginx container from the new ansible/nginx docker image
+      docker_container:
+        name: nginx
+        image: ansible/nginx:latest
+        ports:
+          - "80:80"
+
+    - name: Prompt for the site to be tested
+      pause:
+        prompt: "Check http://{{ ansible_host }} "
+...

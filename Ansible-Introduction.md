@@ -24,3 +24,6 @@ Redhat hosts - 2 \
 Ubuntu hosts - 2 \
 Docker hosts - 1 
 
+To install pip in the host\
+ `curl -O https://bootstrap.pypa.io/get-pip.py`
+ `python get-pip.py`

@@ -1,0 +1,76 @@
+---
+- name: Install Nginx Redhat
+  dnf:
+    name: nginx
+    update_cache: yes
+    state: latest
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - install-nginx-redhat
+
+- name: Install Nginx Ubuntu
+  apt:
+    name: nginx
+    update_cache: yes
+    state: latest
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - install-nginx-ubuntu
+
+#    - name: Install Nginx
+#      package:
+#        name: nginx
+#        state: latest
+
+- name: Create /etc/nginx/sites-available directory if required
+  file:
+    path: /etc/nginx/sites-available
+    state: directory
+  tags:
+    - patch-nginx
+
+- name: Create /etc/nginx/sites-enabled directory if required
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+  tags:
+    - patch-nginx
+
+- name: Copy default nginx configuration
+  copy:
+    src: /Users/asmu/Documents/ansible/demo2/files/nginx-default.conf
+    dest: /etc/nginx/sites-available/default
+  tags:
+    - patch-nginx
+- name: Symbolic link /etc/nginx/sites-available/default to /etc/nginx/sites-enabled/default
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  tags:
+    - patch-nginx
+
+- name: Create nginx/html directory if required
+  file:
+    path: /usr/share/nginx/html
+    state: directory
+  tags:
+    - patch-nginx
+
+- name: Template index.html.j2 to index.html on target
+  template:
+    src: /Users/asmu/Documents/ansible/demo2/templates/index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    mode: 0644
+  tags:
+    - nginx-template
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+  notify: Check HTTP Service
+  tags:
+    - nginx-running
+    - always
+...

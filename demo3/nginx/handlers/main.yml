@@ -1,0 +1,5 @@
+---
+- name: Check HTTP Service
+  uri:
+    url: http://172.17.0.2
+    status_code: 200

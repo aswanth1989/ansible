@@ -13,3 +13,5 @@ Larger projects are made easier to manage, roles are grouped with logical struct
 `ansible-galaxy init nginx`
 `ansible-galaxy install elastic.elasticsearch,7.10.0 --force`
 
+***Refactor the nginx playbooks to roles now***
+
