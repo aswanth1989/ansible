@@ -1,0 +1,22 @@
+--== Ansible Jinja2 if statement ==--
+
+{# If the hostname is ubuntu-c, include a message -#}
+{% if ansible_hostname == "Ubuntu" -%}
+      This is ubuntu
+{% endif %}
+
+---=== Ansible Jinja2 filters ===---
+
+--== min [1, 2, 3, 4, 5] ==--
+
+{{ [1, 2, 3, 4, 5] | min }}
+
+--== max [1, 2, 3, 4, 5] ==--
+
+{{ [1, 2, 3, 4, 5] | max }}
+
+--== unique [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] ==--
+
+{{ [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] | unique }}
+
+

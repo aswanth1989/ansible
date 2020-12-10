@@ -1,0 +1,26 @@
+---
+-
+  hosts: linux
+  vars:
+    message_redhat: "Welcome to Redhat Linux\n"
+    message_ubuntu: "Welcome to Ubuntu Linux\n"
+  tasks:
+    - name: Configure a redhat message
+      copy:
+        content: "{{ message_redhat }}"
+        dest: /tmp/message
+      notify: message
+      when: ansible_distribution == "RedHat"
+
+    - name: Configure a ubuntu message
+      copy:
+        content: "{{ message_ubuntu }}"
+        dest: /tmp/message
+      notify: message
+      when: ansible_distribution == "Ubuntu"
+
+  handlers:
+    - name: message
+      debug:
+        msg: The MOTD was changed
+...

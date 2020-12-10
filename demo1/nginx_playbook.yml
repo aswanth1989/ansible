@@ -1,0 +1,68 @@
+---
+-
+  hosts: ubuntu, redhat
+  become: yes
+  tasks:
+    - name: Install Nginx Redhat
+      dnf:
+        name: nginx
+        update_cache: yes
+        state: latest
+      when: ansible_distribution == 'RedHat'
+
+    - name: Install Nginx Ubuntu
+      apt:
+        name: nginx
+        update_cache: yes
+        state: latest
+      when: ansible_distribution == 'Ubuntu'
+
+#    - name: Install Nginx
+#      package:
+#        name: nginx
+#        state: latest
+
+    - name: Create /etc/nginx/sites-available directory if required
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+    - name: Create /etc/nginx/sites-enabled directory if required
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+
+    - name: Copy default nginx configuration
+      copy:
+        src: /Users/asmu/Documents/ansible/demo1/files/nginx-default.conf
+        dest: /etc/nginx/sites-available/default
+
+    - name: Symbolic link /etc/nginx/sites-available/default to /etc/nginx/sites-enabled/default
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+
+    - name: Create nginx/html directory if required
+      file:
+        path: /usr/share/nginx/html
+        state: directory
+
+    - name: Template index.html.j2 to index.html on target
+      template:
+        src: /Users/asmu/Documents/ansible/demo1/templates/index.html.j2
+        dest: /usr/share/nginx/html/index.html
+        mode: 0644
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      notify: Check HTTP Service
+
+  handlers:
+    - name: Check HTTP Service
+      uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        status_code: 200
+...
